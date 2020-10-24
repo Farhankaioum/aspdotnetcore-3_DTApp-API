@@ -31,6 +31,8 @@ namespace DatingApp.API
             });
 
             services.AddControllers();
+
+            services.AddCors();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -46,6 +48,8 @@ namespace DatingApp.API
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyMethod());
 
             app.UseEndpoints(endpoints =>
             {
