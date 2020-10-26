@@ -1,7 +1,9 @@
+using System;
 using System.Net;
 using System.Text;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using AutoMapper;
 using DatingApp.API.Data;
 using DatingApp.API.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -67,6 +69,8 @@ namespace DatingApp.API
                 .AddNewtonsoftJson(options => {
                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
                 });
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddCors();
             services.AddOptions();
