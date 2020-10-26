@@ -1,12 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Autofac.Extensions.DependencyInjection;
+using DatingApp.API.Data;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Serilog;
 
 namespace DatingApp.API
@@ -15,18 +13,37 @@ namespace DatingApp.API
     {
         public static void Main(string[] args)
         {
+            // For seeding data into DB
+            var host = CreateHostBuilder(args).Build();
+
             Log.Logger = new LoggerConfiguration()
-                   //.MinimumLevel.Debug()
-                   //.MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
-                   .Enrich.FromLogContext()
-                   .WriteTo.RollingFile("Logs//datingAppAPI-log-{Date}.log")
-                   .WriteTo.Console()
-                   .CreateLogger();
+                      .MinimumLevel.Debug()
+                      .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
+                      .Enrich.FromLogContext()
+                      .WriteTo.RollingFile("Logs//datingAppAPI-log-{Date}.log")
+                      .WriteTo.Console()
+                      .CreateLogger();
+
+            // For seeding data into DB
+            using (var scope = host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var context = services.GetRequiredService<DataContext>();
+                    context.Database.Migrate();
+                    Seed.SeedUsers(context);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "An error occured during migration");
+                }
+            }
 
             try
             {
                 Log.Information("Application Starting up");
-                CreateHostBuilder(args).Build().Run();
+                host.Run();
 
             }
             catch (Exception ex)
