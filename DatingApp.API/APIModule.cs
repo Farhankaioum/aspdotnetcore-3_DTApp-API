@@ -23,6 +23,9 @@ namespace DatingApp.API
             builder.RegisterType<AuthRepository>().As<IAuthRepository>()
                 .InstancePerLifetimeScope();
 
+            builder.RegisterType<DatingRepository>().As<IDatingRepository>()
+                .InstancePerLifetimeScope();
+
             base.Load(builder);
         }
     }
