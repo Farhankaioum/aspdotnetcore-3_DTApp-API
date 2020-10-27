@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using DatingApp.API.Data;
 using DatingApp.API.Dtos;
 using DatingApp.API.Models;
@@ -20,13 +21,15 @@ namespace DatingApp.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthRepository _repository;
+        private readonly IMapper _mapper;
 
         private IConfiguration _configuration { get; }
 
-        public AuthController(IAuthRepository repository, IConfiguration configuration)
+        public AuthController(IAuthRepository repository, IConfiguration configuration, IMapper mapper)
         {
             _repository = repository;
             _configuration = configuration;
+            _mapper = mapper;
         }
 
         [HttpPost("register")]
@@ -53,16 +56,18 @@ namespace DatingApp.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
         {
-            var userForRepo = await _repository.Login(userForLoginDto.UserName.ToLower(), userForLoginDto.Password);
+            var userFromRepo = await _repository.Login(userForLoginDto.UserName.ToLower(), userForLoginDto.Password);
 
-            if (userForRepo == null)
+            if (userFromRepo == null)
             {
                 return Unauthorized();
             }
 
-            var token = GenerateToken(userForRepo);
+            var token = GenerateToken(userFromRepo);
 
-            return Ok(new { token = token });
+            var user = _mapper.Map<UserForListDto>(userFromRepo);
+
+            return Ok(new { token = token, user });
         }
 
         private string GenerateToken(User user)
