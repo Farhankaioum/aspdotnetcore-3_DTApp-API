@@ -72,6 +72,9 @@ namespace DatingApp.API
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+            // section binding with class
+            services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
+
             services.AddCors();
             services.AddOptions();
         }
