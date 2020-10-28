@@ -10,10 +10,6 @@ namespace DatingApp.API.Dtos
 
         public string UserName { get; set; }
 
-        public byte[] PasswordHash { get; set; }
-
-        public byte[] PasswordSalt { get; set; }
-
         public string Gender { get; set; }
 
         public int Age { get; set; }
