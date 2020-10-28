@@ -4,14 +4,16 @@ using DatingApp.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DatingApp.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201028201833_LikeTableAddedAndManyToManyRelationshipAddedLikerToLikee")]
+    partial class LikeTableAddedAndManyToManyRelationshipAddedLikerToLikee
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,12 +26,12 @@ namespace DatingApp.API.Migrations
                     b.Property<int>("LikeeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("LikerId")
+                    b.Property<int>("LikeId")
                         .HasColumnType("int");
 
-                    b.HasKey("LikeeId", "LikerId");
+                    b.HasKey("LikeeId", "LikeId");
 
-                    b.HasIndex("LikerId");
+                    b.HasIndex("LikeId");
 
                     b.ToTable("Likes");
                 });
@@ -134,15 +136,15 @@ namespace DatingApp.API.Migrations
 
             modelBuilder.Entity("DatingApp.API.Models.Like", b =>
                 {
-                    b.HasOne("DatingApp.API.Models.User", "Likee")
-                        .WithMany("Likers")
-                        .HasForeignKey("LikeeId")
+                    b.HasOne("DatingApp.API.Models.User", "Liker")
+                        .WithMany("Likees")
+                        .HasForeignKey("LikeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("DatingApp.API.Models.User", "Liker")
-                        .WithMany("Likees")
-                        .HasForeignKey("LikerId")
+                    b.HasOne("DatingApp.API.Models.User", "Likee")
+                        .WithMany("Likers")
+                        .HasForeignKey("LikeeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
