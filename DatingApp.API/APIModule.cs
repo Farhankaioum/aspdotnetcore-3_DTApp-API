@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using DatingApp.API.Data;
+using DatingApp.API.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,10 @@ namespace DatingApp.API
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<DatingRepository>().As<IDatingRepository>()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<LogUserActivity>()
+                .AsSelf()
                 .InstancePerLifetimeScope();
 
             base.Load(builder);
